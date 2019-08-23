@@ -1,4 +1,5 @@
 import React from "react"
+import { connect } from "react-redux"
 import "./App.css"
 
 class App extends React.Component {
@@ -44,20 +45,23 @@ class App extends React.Component {
     ]
     return (
       <div className="App">
-        <select name="model" value={this.state.value}
-          onChange={this.updateSelection}>
+        <form onSubmit={this.handleSubmit}>
 
-          <option value="">-- pick a model --</option>
-          {data.map(dataEntry =>
-            <option key={dataEntry.name} value={dataEntry.name}>
-              {dataEntry.name} ({dataEntry.year})
+          <select name="model" value={this.state.value}
+            onChange={this.updateSelection}>
+
+            <option value="">-- pick a model --</option>
+            {data.map(dataEntry =>
+              <option key={dataEntry.name} value={dataEntry.name}>
+                {dataEntry.name} ({dataEntry.year})
             </option>
-          )}
+            )}
 
-        </select>
+          </select>
+        </form>
       </div>
     )
   }
 }
 
-export default App
+export default connect()(App)
