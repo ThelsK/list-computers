@@ -1,7 +1,15 @@
 import React from "react"
 import { connect } from "react-redux"
 import { addModel } from "./actions/models"
+import ListModel from "./components/ListModel"
 import "./App.css"
+
+// If duplicates should be allowed, change this to false.
+const forbidDuplicates = true
+
+// If a button is absolutely required, instead of
+//    using a submit input, change this to false.
+const useFormSubmit = true
 
 class App extends React.Component {
   state = {
@@ -47,43 +55,76 @@ class App extends React.Component {
   handleSubmit = event => {
     event.preventDefault()
 
-    if (!this.state.model) {
-      alert("Please pick a model!")
-      return
+    if (this.validateModel(this.state.model)) {
+      const model = this.data.find(dataEntry =>
+        this.state.model === dataEntry.name)
+
+      this.props.addModel(model)
+
+      this.setState({
+        model: ""
+      })
+    }
+  }
+
+  validateModel = model => {
+    if (!model) {
+      alert("Please pick a model.")
+      return false
     }
 
-    const model = this.data.find(dataEntry =>
-      this.state.model === dataEntry.name)
-
-    this.props.addModel(model)
-    this.setState({
-      model: ""
-    })
+    if (forbidDuplicates &&
+      this.props.selectedModels.find(selectedModel =>
+        model === selectedModel.name)) {
+      alert("This model has already been added.")
+      return false
+    }
+    return true
   }
 
   render() {
     return (
       <div className="App">
-        <form onSubmit={this.handleSubmit}>
 
+        {this.props.selectedModels.map((model, key) =>
+          <ListModel
+            key={key}
+            name={model.name}
+            manufacturer={model.manufacturer}
+            year={model.year}
+            origin={model.origin}
+          />
+        )}
+
+        <form onSubmit={this.handleSubmit}>
           <select name="model" value={this.state.model}
             onChange={this.updateSelection}>
 
-            <option key="0" value="">-- pick a model --</option>
-            {this.data.map(dataEntry =>
-              <option key={dataEntry.name} value={dataEntry.name}>
+            <option key={0} value="">-- pick a model --</option>
+            {this.data.map((dataEntry, key) =>
+              <option key={key + 1} value={dataEntry.name}>
                 {dataEntry.name} ({dataEntry.year})
               </option>
             )}
 
           </select>
-          <input type="submit" value="Add" />
+          {useFormSubmit
+            ? <input type="submit" value="Add" />
+            : <button onClick={this.handleSubmit}>Add</button>
+          }
         </form>
+
       </div>
     )
   }
 }
 
-const mapDispatchToProps = { addModel }
+const mapStateToProps = state => ({
+  selectedModels: state.models
+})
 
-export default connect(null, mapDispatchToProps)(App)
+const mapDispatchToProps = {
+  addModel
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
