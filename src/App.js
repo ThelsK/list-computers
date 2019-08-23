@@ -2,6 +2,13 @@ import React from "react"
 import "./App.css"
 
 class App extends React.Component {
+  state = {
+    model: ""
+  }
+
+  updateSelection = event =>
+    this.setState({ [event.target.name]: event.target.value })
+
   render() {
     const data = [
       {
@@ -36,12 +43,17 @@ class App extends React.Component {
       },
     ]
     return (
-      <div className="App-header">
-        <select>
+      <div className="App">
+        <select name="model" value={this.state.value}
+          onChange={this.updateSelection}>
+
           <option value="">-- pick a model --</option>
           {data.map(dataEntry =>
-            <option value={dataEntry.name}>{dataEntry.name} ({dataEntry.year})</option>
+            <option key={dataEntry.name} value={dataEntry.name}>
+              {dataEntry.name} ({dataEntry.year})
+            </option>
           )}
+
         </select>
       </div>
     )
