@@ -1,38 +1,8 @@
-const initialState = [
-  {
-    id: 1,
-    name: 'Pizza Margarita',
-    description: 'Minimalism is key!',
-    ingredients: [
-      'tomato',
-      'mozarella',
-      'basil'
-    ]
-  },
-  {
-    id: 2,
-    name: 'Pizza Napoletana',
-    description: 'Like Margarita, but without the basil.',
-    ingredients: [
-      'tomato',
-      'mozarella'
-    ]
-  },
-  {
-    id: 3,
-    name: 'Pizza Bianca',
-    description: 'Did somebody say oil?',
-    ingredients: [
-      'olive oil',
-      'salt',
-      'rosemary'
-    ]
-  }
-]
+import { ADD_MODEL } from "../actions/models"
 
-const reducer = (state = initialState, action = {}) => {
+export default (state = [], action = {}) => {
   switch (action.type) {
-    case 'ADD_PIZZA':
+    case ADD_MODEL:
       return [
         ...state,
         { ...action.payload }
@@ -41,5 +11,3 @@ const reducer = (state = initialState, action = {}) => {
       return state
   }
 }
-
-export default reducer
